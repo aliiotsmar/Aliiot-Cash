@@ -24,78 +24,83 @@
       --bg: #0f172a;
       --panel: #1e293b;
     }
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; user-select: none; }
     body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; color: #fff; }
 
-    /* هيكل الحاسبة */
-    .calc-container { width: 100%; max-width: 400px; background: var(--panel); border-radius: 24px; padding: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); position: relative; }
+    .calc-container { width: 100%; max-width: 420px; background: var(--panel); border-radius: 24px; padding: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); position: relative; }
 
-    /* الشاشة الرئيسية */
     .screen { background: #0f172a; padding: 15px; border-radius: 16px; margin-bottom: 8px; border: 1px solid #334155; }
     .screen-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin-bottom: 12px; }
     .screen-card { background: #1e293b; padding: 8px 5px; border-radius: 10px; border: 1px solid #334155; }
     .screen-card .title { font-size: 0.75rem; color: #94a3b8; margin-bottom: 3px; }
     .screen-card .val { font-size: 0.95rem; font-weight: bold; }
     
-    /* سطر الإدخال */
     .input-box { display: flex; justify-content: space-between; align-items: center; background: #0284c715; border: 1px dashed #38bdf8; border-radius: 10px; padding: 8px 12px; }
     .input-box .label { font-size: 0.85rem; color: #38bdf8; }
     .input-box .num { font-size: 1.4rem; font-weight: bold; color: #fff; }
 
-    /* شريط الوقت والعداد كإطارات منفصلة ومتناسقة */
-.time-bar { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  gap: 10px; 
-  margin-bottom: 12px; 
-}
-.info-badge { 
-  background: #0284c722; 
-  color: var(--brand); 
-  padding: 8px 10px; 
-  border-radius: 10px; 
-  font-size: 0.8rem; 
-  font-weight: bold; 
-  border: 1px solid #0284c755; 
-  text-align: center; 
-  flex: 1; 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 52px;
-  line-height: 1.3;
-}
-    /* شبكة الأزرار */
+    .time-bar { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      gap: 10px; 
+      margin-bottom: 8px; 
+    }
+    .info-badge { 
+      background: #0284c722; 
+      color: var(--brand); 
+      padding: 8px 10px; 
+      border-radius: 10px; 
+      font-size: 0.8rem; 
+      font-weight: bold; 
+      border: 1px solid #0284c755; 
+      text-align: center; 
+      flex: 1; 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 52px;
+      line-height: 1.3;
+    }
+
+    .tip-text { font-size: 0.7rem; color: #64748b; text-align: center; margin-bottom: 10px; }
+
+    .categories-wrapper {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .btn-cat { width: 100%; background: #1e40af; color: #e0f2fe; font-size: 0.8rem; padding: 11px 2px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+    .btn-cat:active { transform: scale(0.95); }
+    .btn-cat-add { background: #0891b2; color: #fff; font-weight: bold; }
+
     .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     button { padding: 13px 5px; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.1s; background: #334155; color: #fff; }
     button:active { transform: scale(0.95); }
-    .btn-cat { background: #1e40af; color: #e0f2fe; font-size: 0.85rem; }
     .btn-action { background: #dc2626; color: #fff; }
     .btn-add { background: var(--success); color: #fff; }
     .btn-nav { background: #475569; color: #fff; }
     .btn-archive { background: #8b5cf6; color: #fff; }
     .btn-whatsapp { background: #25d366; color: #fff; font-size: 0.85rem; }
     .btn-reset { background: var(--warning); color: #000; grid-column: span 4; font-weight: bold; margin-top: 5px; }
-
-    /* زر الحذف */
     .btn-delete { background: var(--danger); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; border: none; cursor: pointer; }
 
-    /* فوتر الشعار Aliiot في الأسفل */
     .brand-footer { text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #334155; }
     .brand-logo { font-size: 0.85rem; font-weight: 800; color: var(--brand); letter-spacing: 1px; }
 
-    /* النوافذ المنبثقة */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 15px; z-index: 100; }
     .modal-content { background: var(--panel); width: 100%; max-width: 420px; border-radius: 20px; padding: 20px; max-height: 85vh; display: flex; flex-direction: column; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; }
     .modal-body { overflow-y: auto; flex: 1; }
     .close-btn { background: transparent; font-size: 1.5rem; color: #94a3b8; padding: 0; }
 
-    /* شبكة الخيارات المنبثقة */
     .sub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .sub-btn { background: #0284c7; color: white; padding: 12px; font-size: 0.95rem; }
+    
+    .sub-btn { background: #0284c7; color: white; padding: 12px; font-size: 0.9rem; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; }
+    .sub-btn-add { background: #16a34a; font-weight: bold; }
 
     table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: right; }
     th, td { padding: 8px 5px; border-bottom: 1px solid #334155; font-size: 0.85rem; }
@@ -107,7 +112,6 @@
     .archive-card { background: #0f172a; padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155; }
     .archive-date { font-weight: bold; color: #38bdf8; margin-bottom: 8px; border-bottom: 1px dashed #334155; padding-bottom: 4px; }
 
-    /* CSS الطباعة */
     @media print {
       body * { visibility: hidden; }
       .printable, .printable * { visibility: visible; }
@@ -148,20 +152,16 @@
   </div>
 
   <div class="time-bar">
-    <div class="info-badge" id="liveTime">📅 --/--/---- 🕒 --:--</div>
-    <div class="info-badge" id="salaryCountdown">⏳ -- يوم</div>
+    <div class="info-badge" id="liveTime"><div>📅 --/--/----</div><div>🕒 --:--</div></div>
+    <div class="info-badge" id="salaryCountdown">⏳ -- يوم من الراتب</div>
   </div>
 
-  <div class="grid">
-    <button class="btn-cat" onclick="openSubMenu('العائلة')">العائلة</button>
-    <button class="btn-cat" onclick="openSubMenu('المنزل')">المنزل</button>
-    <button class="btn-cat" onclick="openSubMenu('الفواتير')">الفواتير</button>
-    <button class="btn-cat" onclick="openSubMenu('الأقساط')">الأقساط</button>
+  
 
-    <button class="btn-cat" onclick="openSubMenu('السيارة')">السيارة</button>
-    <button class="btn-cat" onclick="openSubMenu('المدارس')">المدارس</button>
-    <button class="btn-cat" style="background: #0d9488;" onclick="openSubMenu('السفر')">السفر</button>
-    <button class="btn-add" onclick="executeTransaction('دخل', 'إضافة دخل/راتب')">+ دخل</button>
+  <div class="categories-wrapper" id="mainCategoriesContainer"></div>
+
+  <div class="grid">
+    <button class="btn-add" style="grid-column: span 4;" onclick="executeTransaction('دخل', 'إضافة دخل/راتب')">+ إضافة دخل / راتب</button>
 
     <button class="btn-action" onclick="clearInput()">C</button>
     <button onclick="pressNum('7')">7</button>
@@ -187,7 +187,7 @@
   </div>
 
   <div class="brand-footer">
-    <div class="brand-logo"> ALIIOT AL HAKAMI </div>
+    <div class="brand-logo">ALIIOT AL HAKAMI</div>
   </div>
 </div>
 
@@ -284,53 +284,50 @@
   let currentInput = "0";
   let transactions = JSON.parse(localStorage.getItem('my_expenses')) || [];
 
-  const categoriesData = {
-    'العائلة': ['مريم', 'ريم', 'رشاد', 'علي', 'امي', 'اخرى'],
-    'المنزل': ['المطبخ', 'أدوات النظافة', 'الماء', 'الصرف الصحي', 'فطور', 'غداء', 'عشاء', 'عامل نظافة', 'اخرى'],
-    'الفواتير': ['بيت جيزان', 'المستوصف', 'القصر', 'الانترنت', 'جوالي', 'جوال مريم', 'جوال امي', 'اخرى'],
-    'الأقساط': ['قسط البنك', 'تابي', 'تمارا ', 'اخرى'],
-    'السيارة': ['الاف جي', 'الفورد', 'الصني', 'اخرى'],
-    'المدارس': ['ريم', 'اخرى'],
-    'السفر': ['تذاكر', 'سكن', 'تسوق', 'مصاريف رحلة', 'بنزين', 'اخرى']
+  const defaultStructure = {
+    'العائلة': ['مريم', 'ريم', 'رشاد', 'علي', 'امي'],
+    'المنزل': ['المطبخ', 'أدوات النظافة', 'الماء', 'الصرف الصحي', 'فطور', 'غداء', 'عشاء', 'غرف'],
+    'الفواتير': ['بيت جيزان', 'المستوصف', 'القصر', 'الانترنت', 'جوالي', 'جوال مريم', 'جوال امي'],
+    'الأقساط': ['قسط البنك', 'تابي', 'تمارا'],
+    'السيارة': ['بنزين', 'صيانة', 'زيت', 'غسيل'],
+    'المدارس': ['ريم'],
+    'السفر': ['تذاكر', 'سكن', 'تسوق', 'مصاريف رحلة', 'بنزين']
   };
 
-  const carServices = ['بنزين', 'صيانة', 'زيت', 'غسيل', 'اخرى'];
+  let appCategories = JSON.parse(localStorage.getItem('my_app_categories')) || defaultStructure;
 
-  // تحديث الوقت المباشر بالتنسيق الهجري والعداد
-function updateTimeAndSalary() {
-  let now = new Date();
-  
-  // تنسيق التاريخ الهجري
-  let hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  }).format(now);
-
-  // تنسيق الوقت
-  let timeStr = now.toLocaleTimeString('ar-SA', { 
-    hour: '2-digit', 
-    minute: '2-digit',
-    hour12: true 
-  });
-
-  // عرض التاريخ والوقت في سطرين منفصلين داخل الخلية
-  document.getElementById('liveTime').innerHTML = `<div>${hijriDate}</div><div>${timeStr}</div>`;
-
-  // حساب الأيام المتبقية للراتب (يوم 27)
-  let currentYear = now.getFullYear();
-  let currentMonth = now.getMonth();
-  let salaryDate = new Date(currentYear, currentMonth, 27);
-
-  if (now.getDate() > 27) {
-    salaryDate = new Date(currentYear, currentMonth + 1, 27);
+  function saveCategories() {
+    localStorage.setItem('my_app_categories', JSON.stringify(appCategories));
   }
 
-  let diffTime = salaryDate - now;
-  let daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  function updateTimeAndSalary() {
+    let now = new Date();
+    
+    let hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(now);
 
-  document.getElementById('salaryCountdown').innerHTML = `⏳ ${daysLeft} يوم من الراتب`;
-}
+    let timeStr = now.toLocaleTimeString('ar-SA', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
+
+    document.getElementById('liveTime').innerHTML = `<div>${hijriDate}</div><div>${timeStr}</div>`;
+
+    let salaryDate = new Date(now.getFullYear(), now.getMonth(), 27);
+    if (now.getDate() >= 27) {
+      salaryDate.setMonth(salaryDate.getMonth() + 1);
+    }
+
+    let diffTime = salaryDate - now;
+    let daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    document.getElementById('salaryCountdown').innerHTML = `⏳ ${daysLeft} يوم من الراتب`;
+  }
+
   setInterval(updateTimeAndSalary, 1000);
   updateTimeAndSalary();
 
@@ -354,15 +351,98 @@ function updateTimeAndSalary() {
     localStorage.setItem('my_expenses', JSON.stringify(transactions));
   }
 
-  function pressNum(num) {
-    if (currentInput === "0" && num !== ".") currentInput = num;
-    else currentInput += num;
-    updateDisplay();
+  function addLongPressListener(element, onLongPress, onClick) {
+    let timer = null;
+    let isLongPress = false;
+
+    function start(e) {
+      if (e.type === 'click') return;
+      isLongPress = false;
+      timer = setTimeout(() => {
+        isLongPress = true;
+        onLongPress();
+      }, 800);
+    }
+
+    function cancel() {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    }
+
+    element.addEventListener('mousedown', start);
+    element.addEventListener('touchstart', start, { passive: true });
+
+    element.addEventListener('mouseup', cancel);
+    element.addEventListener('mouseleave', cancel);
+    element.addEventListener('touchend', cancel);
+
+    element.onclick = (e) => {
+      if (isLongPress) {
+        e.preventDefault();
+        e.stopPropagation();
+        isLongPress = false;
+      } else {
+        onClick();
+      }
+    };
   }
 
-  function clearInput() {
-    currentInput = "0";
-    updateDisplay();
+  function renderMainCategories() {
+    let container = document.getElementById('mainCategoriesContainer');
+    container.innerHTML = '';
+
+    Object.keys(appCategories).forEach(cat => {
+      let btn = document.createElement('button');
+      btn.className = 'btn-cat';
+      btn.innerText = cat;
+      if (cat === 'السفر') btn.style.background = '#0d9488';
+
+      addLongPressListener(
+        btn, 
+        () => deleteMainCategory(cat), 
+        () => openSubMenu(cat)
+      );
+
+      container.appendChild(btn);
+    });
+
+    let addBtn = document.createElement('button');
+    addBtn.className = 'btn-cat btn-cat-add';
+    addBtn.innerText = 'قسم ➕';
+    addBtn.onclick = addMainCategory;
+    container.appendChild(addBtn);
+  }
+
+  function addMainCategory() {
+    let catName = prompt("أدخل اسم القسم الرئيسي الجديد (مثال: الاستثمار):");
+    if (!catName || catName.trim() === "") return;
+
+    catName = catName.trim();
+    if (appCategories[catName]) {
+      alert("هذا القسم موجود بالفعل.");
+      return;
+    }
+
+    appCategories[catName] = [];
+    saveCategories();
+    renderMainCategories();
+  }
+
+  // التحقق من المصروفات السابقة للقسم الرئيسي ومنع الحذف إذا وُجدت
+  function deleteMainCategory(catName) {
+    let hasTransactions = transactions.some(t => t.mainCategory === catName && t.type === 'مصروف');
+    if (hasTransactions) {
+      alert(`⚠️ لا يمكن حذف القسم الرئيسي "${catName}" لأنه يحتوي على مصروفات مسجلة في السجل الحالي.`);
+      return;
+    }
+
+    if (confirm(`🗑️ هل ترغب في حذف القسم الرئيسي "${catName}" وجميع أيقوناته؟`)) {
+      delete appCategories[catName];
+      saveCategories();
+      renderMainCategories();
+    }
   }
 
   function openSubMenu(category) {
@@ -372,51 +452,88 @@ function updateTimeAndSalary() {
       return;
     }
 
+    renderSubMenuItems(category);
+    openModal('subMenuModal');
+  }
+
+  function renderSubMenuItems(category) {
     let titleEl = document.getElementById('subMenuTitle');
     let containerEl = document.getElementById('subMenuOptions');
     containerEl.innerHTML = '';
 
     titleEl.innerText = `اختر تفاصيل (${category})`;
 
-    categoriesData[category].forEach(item => {
+    let items = appCategories[category] || [];
+
+    items.forEach(item => {
       let btn = document.createElement('button');
       btn.className = 'sub-btn';
       btn.innerText = item;
 
-      if (category === 'السفر') btn.style.background = '#0d9488';
-
-      if (category === 'السيارة') {
-        btn.onclick = () => openCarServicesMenu(item);
-      } else {
-        btn.onclick = () => {
+      addLongPressListener(
+        btn,
+        () => deleteSubItem(category, item),
+        () => {
           closeModal('subMenuModal');
           executeTransaction('مصروف', `${category} - ${item}`, category);
-        };
-      }
+        }
+      );
+
       containerEl.appendChild(btn);
     });
 
-    openModal('subMenuModal');
+    let addBtn = document.createElement('button');
+    addBtn.className = 'sub-btn sub-btn-add';
+    addBtn.innerText = 'أيقونة ➕';
+    addBtn.onclick = () => addSubItem(category);
+    containerEl.appendChild(addBtn);
   }
 
-  function openCarServicesMenu(carName) {
-    let titleEl = document.getElementById('subMenuTitle');
-    let containerEl = document.getElementById('subMenuOptions');
-    containerEl.innerHTML = '';
+  function addSubItem(category) {
+    let itemName = prompt(`إضافة أيقونة جديدة تحت قسم (${category}):`);
+    if (!itemName || itemName.trim() === "") return;
 
-    titleEl.innerText = `خدمات (${carName})`;
+    itemName = itemName.trim();
+    if (!appCategories[category]) {
+      appCategories[category] = [];
+    }
 
-    carServices.forEach(service => {
-      let btn = document.createElement('button');
-      btn.className = 'sub-btn';
-      btn.style.background = '#e11d48';
-      btn.innerText = service;
-      btn.onclick = () => {
-        closeModal('subMenuModal');
-        executeTransaction('مصروف', `السيارة (${carName}) - ${service}`, 'السيارة');
-      };
-      containerEl.appendChild(btn);
-    });
+    if (appCategories[category].includes(itemName)) {
+      alert("هذه الأيقونة موجودة بالفعل.");
+      return;
+    }
+
+    appCategories[category].push(itemName);
+    saveCategories();
+    renderSubMenuItems(category);
+  }
+
+  // التحقق من المصروفات السابقة للأيقونة الفرعية ومنع الحذف إذا وُجدت
+  function deleteSubItem(category, itemName) {
+    let fullDetailName = `${category} - ${itemName}`;
+    let hasTransactions = transactions.some(t => t.category === fullDetailName && t.type === 'مصروف');
+    if (hasTransactions) {
+      alert(`⚠️ لا يمكن حذف الأيقونة "${itemName}" لأنها تحتوي على مصروفات مسجلة.`);
+      return;
+    }
+
+    if (confirm(`🗑️ هل ترغب في حذف الأيقونة "${itemName}"؟`)) {
+      appCategories[category] = appCategories[category].filter(i => i !== itemName);
+      saveCategories();
+      renderSubMenuItems(category);
+    }
+  }
+
+  function pressNum(num) {
+    if (num === '.' && currentInput.includes('.')) return;
+    if (currentInput === "0" && num !== ".") currentInput = num;
+    else currentInput += num;
+    updateDisplay();
+  }
+
+  function clearInput() {
+    currentInput = "0";
+    updateDisplay();
   }
 
   function executeTransaction(type, categoryDetail, mainCategory = 'عام') {
@@ -448,7 +565,6 @@ function updateTimeAndSalary() {
     document.getElementById(id).style.display = 'none';
   }
 
-  // عرض سجل العمليات مع إضافة زر الحذف لكل بند
   function renderHistory() {
     let tbody = document.getElementById('historyTableBody');
     tbody.innerHTML = '';
@@ -470,7 +586,6 @@ function updateTimeAndSalary() {
     });
   }
 
-  // دالة حذف عملية محددة بناءً على المعرف (id)
   function deleteTransaction(id) {
     if (confirm("هل أنت تأكد من حذف هذه العملية؟")) {
       transactions = transactions.filter(t => t.id !== id);
@@ -553,7 +668,6 @@ function updateTimeAndSalary() {
     document.getElementById('repBalance').innerText = (totalIncome - totalExpense).toLocaleString();
   }
 
-  // مشاركة التقرير المالي عبر الواتساب
   function shareToWhatsApp() {
     if (transactions.length === 0) {
       alert("لا يوجد عمليات لمشاركتها حالياً.");
@@ -590,7 +704,7 @@ function updateTimeAndSalary() {
       text += `▫️ ${cat}: ${amount.toLocaleString()} ر.س (${percentage}%)\n`;
     }
 
-    text += `\n⚡ *تم استخراج التقرير بواسطة Aliiot Cash*`;
+    text += `\n *تم استخراج التقرير بواسطة Aliiot Cash*`;
 
     let url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
@@ -617,6 +731,7 @@ function updateTimeAndSalary() {
     }
   }
 
+  renderMainCategories();
   updateDisplay();
 </script>
 

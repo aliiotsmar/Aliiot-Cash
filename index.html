@@ -153,10 +153,10 @@
   </div>
 
   <div class="grid">
-    <button class="btn-cat" onclick="openSubMenu('الأبناء')">الأبناء</button>
+    <button class="btn-cat" onclick="openSubMenu('العائلة')">العائلة</button>
     <button class="btn-cat" onclick="openSubMenu('المنزل')">المنزل</button>
-    <button class="btn-cat" onclick="openSubMenu('الكهرباء')">الكهرباء</button>
-    <button class="btn-cat" onclick="openSubMenu('الاتصالات')">الاتصالات</button>
+    <button class="btn-cat" onclick="openSubMenu('الفواتير')">الفواتير</button>
+    <button class="btn-cat" onclick="openSubMenu('الأقساط')">الأقساط</button>
 
     <button class="btn-cat" onclick="openSubMenu('السيارة')">السيارة</button>
     <button class="btn-cat" onclick="openSubMenu('المدارس')">المدارس</button>
@@ -285,10 +285,10 @@
   let transactions = JSON.parse(localStorage.getItem('my_expenses')) || [];
 
   const categoriesData = {
-    'الأبناء': ['مريم', 'ريم', 'رشاد', 'علي', 'اخرى'],
+    'العائلة': ['مريم', 'ريم', 'رشاد', 'علي', 'امي', 'اخرى'],
     'المنزل': ['المطبخ', 'أدوات النظافة', 'الماء', 'الصرف الصحي', 'فطور', 'غداء', 'عشاء', 'عامل نظافة', 'اخرى'],
-    'الكهرباء': ['بيت جيزان', 'المستوصف', 'القصر', 'اخرى'],
-    'الاتصالات': ['الانترنت', 'جوالي', 'جوال مريم', 'جوال امي', 'اخرى'],
+    'الفواتير': ['بيت جيزان', 'المستوصف', 'القصر', 'الانترنت', 'جوالي', 'جوال مريم', 'جوال امي', 'اخرى'],
+    'الأقساط': ['قسط البنك', 'تابي', 'تمارا ', 'اخرى'],
     'السيارة': ['الاف جي', 'الفورد', 'الصني', 'اخرى'],
     'المدارس': ['ريم', 'اخرى'],
     'السفر': ['تذاكر', 'سكن', 'تسوق', 'مصاريف رحلة', 'بنزين', 'اخرى']
@@ -329,7 +329,7 @@ function updateTimeAndSalary() {
   let diffTime = salaryDate - now;
   let daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  document.getElementById('salaryCountdown').innerHTML = `⏳ ${daysLeft} يوم`;
+  document.getElementById('salaryCountdown').innerHTML = `⏳ ${daysLeft} يوم من الراتب`;
 }
   setInterval(updateTimeAndSalary, 1000);
   updateTimeAndSalary();

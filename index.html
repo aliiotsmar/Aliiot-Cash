@@ -58,6 +58,9 @@
     .btn-whatsapp { background: #25d366; color: #fff; font-size: 0.85rem; }
     .btn-reset { background: var(--warning); color: #000; grid-column: span 4; font-weight: bold; margin-top: 5px; }
 
+    /* زر الحذف */
+    .btn-delete { background: var(--danger); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; border: none; cursor: pointer; }
+
     /* فوتر الشعار Aliiot في الأسفل */
     .brand-footer { text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #334155; }
     .brand-logo { font-size: 0.85rem; font-weight: 800; color: var(--brand); letter-spacing: 1px; }
@@ -89,7 +92,7 @@
       .printable, .printable * { visibility: visible; }
       .printable { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; background: #fff !important; padding: 0; margin: 0; }
       .modal, .modal-content { background: #fff !important; color: #000 !important; position: absolute; left: 0; top: 0; width: 100%; max-width: 100%; box-shadow: none !important; }
-      .close-btn, button { display: none !important; }
+      .close-btn, button, .btn-delete { display: none !important; }
       table, th, td { border: 1px solid #000 !important; color: #000 !important; }
       th { background-color: #f2f2f2 !important; }
       .archive-card { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; page-break-inside: avoid; }
@@ -163,7 +166,7 @@
   </div>
 
   <div class="brand-footer">
-    <div class="brand-logo">⚡ ALIIOT DESIGN</div>
+    <div class="brand-logo"> ALIIOT AL HAKAMI </div>
   </div>
 </div>
 
@@ -193,6 +196,7 @@
             <th>النوع</th>
             <th>السبب / الفئة</th>
             <th>المبلغ</th>
+            <th>إجراء</th>
           </tr>
         </thead>
         <tbody id="historyTableBody"></tbody>
@@ -408,18 +412,35 @@
     document.getElementById(id).style.display = 'none';
   }
 
+  // عرض سجل العمليات مع إضافة زر الحذف لكل بند
   function renderHistory() {
     let tbody = document.getElementById('historyTableBody');
     tbody.innerHTML = '';
+    
+    if(transactions.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">لا يوجد عمليات مسجلة.</td></tr>';
+      return;
+    }
+
     transactions.slice().reverse().forEach(t => {
       let row = `<tr class="${t.type === 'دخل' ? 'income-row' : 'expense-row'}">
         <td>${t.date}</td>
         <td>${t.type}</td>
         <td>${t.category}</td>
         <td>${t.amount.toLocaleString()}</td>
+        <td><button class="btn-delete" onclick="deleteTransaction(${t.id})">حذف 🗑️</button></td>
       </tr>`;
       tbody.innerHTML += row;
     });
+  }
+
+  // دالة حذف عملية محددة بناءً على المعرف (id)
+  function deleteTransaction(id) {
+    if (confirm("هل أنت تأكد من حذف هذه العملية؟")) {
+      transactions = transactions.filter(t => t.id !== id);
+      updateDisplay();
+      renderHistory();
+    }
   }
 
   function renderArchives() {

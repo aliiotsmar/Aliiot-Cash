@@ -156,7 +156,7 @@
     <div class="info-badge" id="salaryCountdown">⏳ -- يوم من الراتب</div>
   </div>
 
-  
+  <div class="tip-text">💡 اضغط ضغطة مطوّلة على أي زر لحذفه</div>
 
   <div class="categories-wrapper" id="mainCategoriesContainer"></div>
 
@@ -191,6 +191,7 @@
   </div>
 </div>
 
+<!-- النافذة الفرعية المستوى الأول (الأفرع) -->
 <div class="modal" id="subMenuModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -199,6 +200,19 @@
     </div>
     <div class="modal-body">
       <div class="sub-grid" id="subMenuOptions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- النافذة الفرعية المستوى الثاني (الخدمات) -->
+<div class="modal" id="serviceMenuModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="serviceMenuTitle">اختر الخدمة</h3>
+      <button class="close-btn" onclick="closeModal('serviceMenuModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="sub-grid" id="serviceMenuOptions"></div>
     </div>
   </div>
 </div>
@@ -284,20 +298,46 @@
   let currentInput = "0";
   let transactions = JSON.parse(localStorage.getItem('my_expenses')) || [];
 
+  // الهيكلية الجديدة ثلاثية المستويات
   const defaultStructure = {
-    'العائلة': ['مريم', 'ريم', 'رشاد', 'علي', 'امي'],
-    'المنزل': ['المطبخ', 'أدوات النظافة', 'الماء', 'الصرف الصحي', 'فطور', 'غداء', 'عشاء', 'غرف'],
-    'الفواتير': ['بيت جيزان', 'المستوصف', 'القصر', 'الانترنت', 'جوالي', 'جوال مريم', 'جوال امي'],
-    'الأقساط': ['قسط البنك', 'تابي', 'تمارا'],
-    'السيارة': ['بنزين', 'صيانة', 'زيت', 'غسيل'],
-    'المدارس': ['ريم'],
-    'السفر': ['تذاكر', 'سكن', 'تسوق', 'مصاريف رحلة', 'بنزين']
+    'السيارة': {
+      'الأف جي': ['بنزين', 'غسيل', 'صيانة', 'زيت'],
+      'الصني': ['بنزين', 'غسيل', 'صيانة', 'زيت'],
+      'الفورد': ['بنزين', 'غسيل', 'صيانة', 'زيت']
+    },
+    'العائلة': {
+      'مريم': ['مصروف شخصي', 'مشتريات'],
+      'ريم': ['مصروف شخصي', 'مشتريات'],
+      'رشاد': ['مصروف شخصي', 'مشتريات'],
+      'علي': ['مصروف شخصي', 'مشتريات'],
+      'امي': ['مصروف شخصي', 'مشتريات']
+    },
+    'المنزل': {
+      'المطبخ': ['مقاضي', 'خضار وفواكه'],
+      'أدوات النظافة': ['منظفات'],
+      'الماء': ['سقيا', 'وايت'],
+      'الصرف الصحي': ['رسوم'],
+      'الوجبات': ['فطور', 'غداء', 'عشاء']
+    },
+    'الفواتير': {
+      'الخدمات': ['بيت جيزان', 'المستوصف', 'القصر', 'الانترنت'],
+      'الجوالات': ['جوالي', 'جوال مريم', 'جوال امي']
+    },
+    'الأقساط': {
+      'البنوك والتمويل': ['قسط البنك', 'تابي', 'تمارا']
+    },
+    'المدارس': {
+      'ريم': ['رسوم', 'مستلزمات']
+    },
+    'السفر': {
+      'مصاريف السفر': ['تذاكر', 'سكن', 'تسوق', 'مصاريف رحلة', 'بنزين']
+    }
   };
 
-  let appCategories = JSON.parse(localStorage.getItem('my_app_categories')) || defaultStructure;
+  let appCategories = JSON.parse(localStorage.getItem('my_app_categories_v2')) || defaultStructure;
 
   function saveCategories() {
-    localStorage.setItem('my_app_categories', JSON.stringify(appCategories));
+    localStorage.setItem('my_app_categories_v2', JSON.stringify(appCategories));
   }
 
   function updateTimeAndSalary() {
@@ -389,6 +429,7 @@
     };
   }
 
+  // 1. عرض الأقسام الرئيسية
   function renderMainCategories() {
     let container = document.getElementById('mainCategoriesContainer');
     container.innerHTML = '';
@@ -425,26 +466,26 @@
       return;
     }
 
-    appCategories[catName] = [];
+    appCategories[catName] = {};
     saveCategories();
     renderMainCategories();
   }
 
-  // التحقق من المصروفات السابقة للقسم الرئيسي ومنع الحذف إذا وُجدت
   function deleteMainCategory(catName) {
     let hasTransactions = transactions.some(t => t.mainCategory === catName && t.type === 'مصروف');
     if (hasTransactions) {
-      alert(`⚠️ لا يمكن حذف القسم الرئيسي "${catName}" لأنه يحتوي على مصروفات مسجلة في السجل الحالي.`);
+      alert(`⚠️ لا يمكن حذف القسم الرئيسي "${catName}" لأنه يحتوي على مصروفات مسجلة.`);
       return;
     }
 
-    if (confirm(`🗑️ هل ترغب في حذف القسم الرئيسي "${catName}" وجميع أيقوناته؟`)) {
+    if (confirm(`🗑️ هل ترغب في حذف القسم الرئيسي "${catName}" وجميع محتوياته؟`)) {
       delete appCategories[catName];
       saveCategories();
       renderMainCategories();
     }
   }
 
+  // 2. عرض المستوى الأول من الأفرع (مثل: الأف جي، الصني)
   function openSubMenu(category) {
     let amount = parseFloat(currentInput);
     if (!amount || amount <= 0) {
@@ -461,9 +502,9 @@
     let containerEl = document.getElementById('subMenuOptions');
     containerEl.innerHTML = '';
 
-    titleEl.innerText = `اختر تفاصيل (${category})`;
+    titleEl.innerText = `اختر الفرع (${category})`;
 
-    let items = appCategories[category] || [];
+    let items = Object.keys(appCategories[category] || {});
 
     items.forEach(item => {
       let btn = document.createElement('button');
@@ -475,7 +516,7 @@
         () => deleteSubItem(category, item),
         () => {
           closeModal('subMenuModal');
-          executeTransaction('مصروف', `${category} - ${item}`, category);
+          openServiceMenu(category, item);
         }
       );
 
@@ -495,32 +536,101 @@
 
     itemName = itemName.trim();
     if (!appCategories[category]) {
-      appCategories[category] = [];
+      appCategories[category] = {};
     }
 
-    if (appCategories[category].includes(itemName)) {
+    if (appCategories[category][itemName]) {
       alert("هذه الأيقونة موجودة بالفعل.");
       return;
     }
 
-    appCategories[category].push(itemName);
+    // افتراض قائمة خدمات افتراضية للأيقونة الجديد
+    appCategories[category][itemName] = ['عام', 'بنزين', 'غسيل', 'صيانة'];
     saveCategories();
     renderSubMenuItems(category);
   }
 
-  // التحقق من المصروفات السابقة للأيقونة الفرعية ومنع الحذف إذا وُجدت
   function deleteSubItem(category, itemName) {
-    let fullDetailName = `${category} - ${itemName}`;
-    let hasTransactions = transactions.some(t => t.category === fullDetailName && t.type === 'مصروف');
+    let hasTransactions = transactions.some(t => t.subCategory === itemName && t.mainCategory === category && t.type === 'مصروف');
     if (hasTransactions) {
       alert(`⚠️ لا يمكن حذف الأيقونة "${itemName}" لأنها تحتوي على مصروفات مسجلة.`);
       return;
     }
 
     if (confirm(`🗑️ هل ترغب في حذف الأيقونة "${itemName}"؟`)) {
-      appCategories[category] = appCategories[category].filter(i => i !== itemName);
+      delete appCategories[category][itemName];
       saveCategories();
       renderSubMenuItems(category);
+    }
+  }
+
+  // 3. عرض المستوى الثاني من الخدمات (مثل: بنزين، غسيل)
+  function openServiceMenu(category, subCategory) {
+    renderServiceMenuItems(category, subCategory);
+    openModal('serviceMenuModal');
+  }
+
+  function renderServiceMenuItems(category, subCategory) {
+    let titleEl = document.getElementById('serviceMenuTitle');
+    let containerEl = document.getElementById('serviceMenuOptions');
+    containerEl.innerHTML = '';
+
+    titleEl.innerText = `${category} ◂ ${subCategory}`;
+
+    let services = appCategories[category][subCategory] || [];
+
+    services.forEach(service => {
+      let btn = document.createElement('button');
+      btn.className = 'sub-btn';
+      btn.style.background = '#0284c7';
+      btn.innerText = service;
+
+      addLongPressListener(
+        btn,
+        () => deleteServiceItem(category, subCategory, service),
+        () => {
+          closeModal('serviceMenuModal');
+          executeTransaction('مصروف', `${category} - ${subCategory} (${service})`, category, subCategory);
+        }
+      );
+
+      containerEl.appendChild(btn);
+    });
+
+    let addBtn = document.createElement('button');
+    addBtn.className = 'sub-btn sub-btn-add';
+    addBtn.innerText = 'خدمة ➕';
+    addBtn.onclick = () => addServiceItem(category, subCategory);
+    containerEl.appendChild(addBtn);
+  }
+
+  function addServiceItem(category, subCategory) {
+    let serviceName = prompt(`إضافة خدمة جديدة تحت (${subCategory}):`);
+    if (!serviceName || serviceName.trim() === "") return;
+
+    serviceName = serviceName.trim();
+    if (appCategories[category][subCategory].includes(serviceName)) {
+      alert("هذه الخدمة موجودة بالفعل.");
+      return;
+    }
+
+    appCategories[category][subCategory].push(serviceName);
+    saveCategories();
+    renderServiceMenuItems(category, subCategory);
+  }
+
+  function deleteServiceItem(category, subCategory, serviceName) {
+    let fullDetailName = `${category} - ${subCategory} (${serviceName})`;
+    let hasTransactions = transactions.some(t => t.category === fullDetailName && t.type === 'مصروف');
+    if (hasTransactions) {
+      alert(`⚠️ لا يمكن حذف الخدمة "${serviceName}" لأنها تحتوي على مصروفات مسجلة.`);
+      return;
+    }
+
+    if (confirm(`🗑️ هل ترغب في حذف الخدمة "${serviceName}"؟`)) {
+      appCategories[category][subCategory] = appCategories[category][subCategory].filter(s => s !== serviceName);
+      saveCategories();
+      renderServiceMenuItems(category, subCategory);
     }
   }
 
@@ -536,7 +646,7 @@
     updateDisplay();
   }
 
-  function executeTransaction(type, categoryDetail, mainCategory = 'عام') {
+  function executeTransaction(type, categoryDetail, mainCategory = 'عام', subCategory = '') {
     let amount = parseFloat(currentInput);
     if (!amount || amount <= 0) return;
 
@@ -545,6 +655,7 @@
       date: new Date().toLocaleDateString('ar-SA', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
       type: type,
       mainCategory: mainCategory,
+      subCategory: subCategory,
       category: categoryDetail,
       amount: amount
     };
@@ -704,7 +815,7 @@
       text += `▫️ ${cat}: ${amount.toLocaleString()} ر.س (${percentage}%)\n`;
     }
 
-    text += `\n *تم استخراج التقرير بواسطة Aliiot Cash*`;
+    text += `\n⚡ *تم استخراج التقرير بواسطة Aliiot Cash*`;
 
     let url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');

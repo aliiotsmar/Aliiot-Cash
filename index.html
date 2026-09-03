@@ -13,6 +13,7 @@
 
   <link rel="apple-touch-icon" href="https://via.placeholder.com/192/0f172a/38bdf8?text=Aliiot">
   <link rel="icon" href="https://via.placeholder.com/192/0f172a/38bdf8?text=Aliiot">
+  <link rel="manifest" href="manifest.json">
 
   <style>
     :root {
@@ -39,40 +40,12 @@
     .input-box .label { font-size: 0.85rem; color: #38bdf8; }
     .input-box .num { font-size: 1.4rem; font-weight: bold; color: #fff; }
 
-    .time-bar { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      gap: 10px; 
-      margin-bottom: 8px; 
-    }
-    .info-badge { 
-      background: #0284c722; 
-      color: var(--brand); 
-      padding: 8px 10px; 
-      border-radius: 10px; 
-      font-size: 0.8rem; 
-      font-weight: bold; 
-      border: 1px solid #0284c755; 
-      text-align: center; 
-      flex: 1; 
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 52px;
-      line-height: 1.3;
-    }
+    .time-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .info-badge { background: #0284c722; color: var(--brand); padding: 8px 10px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; border: 1px solid #0284c755; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 52px; line-height: 1.3; }
 
     .tip-text { font-size: 0.7rem; color: #64748b; text-align: center; margin-bottom: 10px; }
 
-    .categories-wrapper {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
+    .categories-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
     .btn-cat { width: 100%; background: #1e40af; color: #e0f2fe; font-size: 0.8rem; padding: 11px 2px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; }
     .btn-cat:active { transform: scale(0.95); }
     .btn-cat-add { background: #0891b2; color: #fff; font-weight: bold; }
@@ -98,7 +71,6 @@
     .close-btn { background: transparent; font-size: 1.5rem; color: #94a3b8; padding: 0; }
 
     .sub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    
     .sub-btn { background: #0284c7; color: white; padding: 12px; font-size: 0.9rem; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; }
     .sub-btn-add { background: #16a34a; font-weight: bold; }
 
@@ -111,6 +83,9 @@
 
     .archive-card { background: #0f172a; padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155; }
     .archive-date { font-weight: bold; color: #38bdf8; margin-bottom: 8px; border-bottom: 1px dashed #334155; padding-bottom: 4px; }
+
+    .filter-card { background: #0f172a; border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid #0284c7; }
+    .filter-card p { font-size: 0.85rem; margin-bottom: 4px; }
 
     @media print {
       body * { visibility: hidden; }
@@ -217,6 +192,34 @@
   </div>
 </div>
 
+<!-- نافذة فحص وتفاصيل البند المحدد -->
+<div class="modal" id="itemDetailsModal">
+  <div class="modal-content printable">
+    <div class="modal-header">
+      <h3 id="itemDetailsTitle">تفاصيل البند</h3>
+      <button class="close-btn" onclick="closeModal('itemDetailsModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="filter-card">
+        <p>إجمالي المبالغ المصروفة: <strong id="itemTotalAmount" style="color:var(--danger)">0</strong> ر.س</p>
+        <p>النسبة من إجمالي المصروفات: <strong id="itemPercentage" style="color:var(--brand)">0%</strong></p>
+        <p>عدد العمليات المسجلة: <strong id="itemCount">0</strong></p>
+      </div>
+      <div class="section-title">📝 السجل التخصصي للبند</div>
+      <table>
+        <thead>
+          <tr>
+            <th>التاريخ</th>
+            <th>الفرع/الخدمة</th>
+            <th>المبلغ</th>
+          </tr>
+        </thead>
+        <tbody id="itemTransactionsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="historyModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -298,7 +301,6 @@
   let currentInput = "0";
   let transactions = JSON.parse(localStorage.getItem('my_expenses')) || [];
 
-  // الهيكلية الجديدة ثلاثية المستويات
   const defaultStructure = {
     'السيارة': {
       'الأف جي': ['بنزين', 'غسيل', 'صيانة', 'زيت'],
@@ -429,7 +431,6 @@
     };
   }
 
-  // 1. عرض الأقسام الرئيسية
   function renderMainCategories() {
     let container = document.getElementById('mainCategoriesContainer');
     container.innerHTML = '';
@@ -485,14 +486,7 @@
     }
   }
 
-  // 2. عرض المستوى الأول من الأفرع (مثل: الأف جي، الصني)
   function openSubMenu(category) {
-    let amount = parseFloat(currentInput);
-    if (!amount || amount <= 0) {
-      alert("رجاءً أدخل المبلغ من الأرقام أولاً.");
-      return;
-    }
-
     renderSubMenuItems(category);
     openModal('subMenuModal');
   }
@@ -544,7 +538,6 @@
       return;
     }
 
-    // افتراض قائمة خدمات افتراضية للأيقونة الجديد
     appCategories[category][itemName] = ['عام', 'بنزين', 'غسيل', 'صيانة'];
     saveCategories();
     renderSubMenuItems(category);
@@ -564,7 +557,6 @@
     }
   }
 
-  // 3. عرض المستوى الثاني من الخدمات (مثل: بنزين، غسيل)
   function openServiceMenu(category, subCategory) {
     renderServiceMenuItems(category, subCategory);
     openModal('serviceMenuModal');
@@ -589,8 +581,13 @@
         btn,
         () => deleteServiceItem(category, subCategory, service),
         () => {
+          let amount = parseFloat(currentInput);
           closeModal('serviceMenuModal');
-          executeTransaction('مصروف', `${category} - ${subCategory} (${service})`, category, subCategory);
+          if (amount > 0) {
+            executeTransaction('مصروف', `${category} - ${subCategory} (${service})`, category, subCategory, service);
+          } else {
+            showItemDetails(service, 'service', category, subCategory);
+          }
         }
       );
 
@@ -634,6 +631,47 @@
     }
   }
 
+  function showItemDetails(itemName, level, mainCat = '', subCat = '') {
+    let totalExpense = 0;
+    transactions.forEach(t => { if(t.type === 'مصروف') totalExpense += t.amount; });
+
+    let filtered = [];
+
+    if (level === 'main') {
+      filtered = transactions.filter(t => t.mainCategory === itemName && t.type === 'مصروف');
+    } else if (level === 'sub') {
+      filtered = transactions.filter(t => t.mainCategory === mainCat && t.subCategory === itemName && t.type === 'مصروف');
+    } else if (level === 'service') {
+      filtered = transactions.filter(t => t.mainCategory === mainCat && t.subCategory === subCat && t.service === itemName && t.type === 'مصروف');
+    }
+
+    let itemTotal = filtered.reduce((acc, curr) => acc + curr.amount, 0);
+    let percentage = totalExpense > 0 ? ((itemTotal / totalExpense) * 100).toFixed(1) : 0;
+
+    document.getElementById('itemDetailsTitle').innerText = `تحليل بند: ${itemName}`;
+    document.getElementById('itemTotalAmount').innerText = itemTotal.toLocaleString();
+    document.getElementById('itemPercentage').innerText = `${percentage}%`;
+    document.getElementById('itemCount').innerText = filtered.length;
+
+    let tbody = document.getElementById('itemTransactionsBody');
+    tbody.innerHTML = '';
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#94a3b8;">لا يوجد مصروفات مسجلة لهذا البند.</td></tr>';
+    } else {
+      filtered.slice().reverse().forEach(t => {
+        let row = `<tr>
+          <td>${t.date}</td>
+          <td>${t.category}</td>
+          <td>${t.amount.toLocaleString()} ر.س</td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    openModal('itemDetailsModal');
+  }
+
   function pressNum(num) {
     if (num === '.' && currentInput.includes('.')) return;
     if (currentInput === "0" && num !== ".") currentInput = num;
@@ -646,7 +684,7 @@
     updateDisplay();
   }
 
-  function executeTransaction(type, categoryDetail, mainCategory = 'عام', subCategory = '') {
+  function executeTransaction(type, categoryDetail, mainCategory = 'عام', subCategory = '', service = '') {
     let amount = parseFloat(currentInput);
     if (!amount || amount <= 0) return;
 
@@ -656,6 +694,7 @@
       type: type,
       mainCategory: mainCategory,
       subCategory: subCategory,
+      service: service,
       category: categoryDetail,
       amount: amount
     };
@@ -840,6 +879,15 @@
       updateDisplay();
       alert("تمت الأرشفة وتصفير الرصيد بنجاح! يمكنك الاطلاع عليها في زر (الأرشيف).");
     }
+  }
+
+  // تسجيل الـ Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('PWA Service Worker Registered:', reg))
+        .catch(err => console.log('PWA Service Worker Failed:', err));
+    });
   }
 
   renderMainCategories();

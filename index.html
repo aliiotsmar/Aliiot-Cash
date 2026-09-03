@@ -13,7 +13,6 @@
 
   <link rel="apple-touch-icon" href="https://via.placeholder.com/192/0f172a/38bdf8?text=Aliiot">
   <link rel="icon" href="https://via.placeholder.com/192/0f172a/38bdf8?text=Aliiot">
-  <link rel="manifest" href="manifest.json">
 
   <style>
     :root {
@@ -86,19 +85,6 @@
 
     .filter-card { background: #0f172a; border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid #0284c7; }
     .filter-card p { font-size: 0.85rem; margin-bottom: 4px; }
-
-    @media print {
-      body * { visibility: hidden; }
-      .printable, .printable * { visibility: visible; }
-      .printable { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; background: #fff !important; padding: 0; margin: 0; }
-      .modal, .modal-content { background: #fff !important; color: #000 !important; position: absolute; left: 0; top: 0; width: 100%; max-width: 100%; box-shadow: none !important; }
-      .close-btn, button, .btn-delete { display: none !important; }
-      table, th, td { border: 1px solid #000 !important; color: #000 !important; }
-      th { background-color: #f2f2f2 !important; }
-      .archive-card { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; page-break-inside: avoid; }
-      .section-title, .archive-date { color: #000 !important; border-bottom: 1px solid #000 !important; }
-      span, strong { color: #000 !important; }
-    }
   </style>
 </head>
 <body>
@@ -251,7 +237,6 @@
     </div>
     <div class="modal-body">
       <div id="archiveContainer"></div>
-      <button onclick="window.print()" style="margin-top: 15px; width: 100%; background: var(--primary);">🖨️ طباعة سجل الأرشيف</button>
     </div>
   </div>
 </div>
@@ -292,14 +277,37 @@
         </thead>
         <tbody id="reportTableBody"></tbody>
       </table>
-      <button onclick="window.print()" style="margin-top: 15px; width: 100%; background: var(--primary);">🖨️ طباعة التقرير</button>
     </div>
   </div>
 </div>
 
 <script>
   let currentInput = "0";
-  let transactions = JSON.parse(localStorage.getItem('my_expenses')) || [];
+
+  // دالة فحص واسترجاع البيانات القديمة تلقائياً من أي ذاكرة سابقة
+  function loadAndRecoverData() {
+    let saved = localStorage.getItem('my_expenses');
+    if (saved) {
+      try { return JSON.parse(saved); } catch(e) {}
+    }
+
+    // البحث في المفاتيح الاحتياطية
+    for (let i = 0; i < localStorage.length; i++) {
+      let key = localStorage.key(i);
+      if (key && (key.includes('expense') || key.includes('data') || key.includes('trans'))) {
+        try {
+          let parsed = JSON.parse(localStorage.getItem(key));
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            localStorage.setItem('my_expenses', JSON.stringify(parsed));
+            return parsed;
+          }
+        } catch(e) {}
+      }
+    }
+    return [];
+  }
+
+  let transactions = loadAndRecoverData();
 
   const defaultStructure = {
     'السيارة': {
@@ -458,7 +466,7 @@
   }
 
   function addMainCategory() {
-    let catName = prompt("أدخل اسم القسم الرئيسي الجديد (مثال: الاستثمار):");
+    let catName = prompt("أدخل اسم القسم الرئيسي الجديد:");
     if (!catName || catName.trim() === "") return;
 
     catName = catName.trim();
@@ -879,15 +887,6 @@
       updateDisplay();
       alert("تمت الأرشفة وتصفير الرصيد بنجاح! يمكنك الاطلاع عليها في زر (الأرشيف).");
     }
-  }
-
-  // تسجيل الـ Service Worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('PWA Service Worker Registered:', reg))
-        .catch(err => console.log('PWA Service Worker Failed:', err));
-    });
   }
 
   renderMainCategories();
